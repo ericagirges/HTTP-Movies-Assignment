@@ -48,7 +48,7 @@ const intialFormValues = {
   title: "",
   director: "",
   metascore: "",
-  actors: "",
+  stars: "",
 };
 
 const AddMovie = ({setMovieList}) => {
@@ -64,14 +64,16 @@ const AddMovie = ({setMovieList}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios
-      .post("/api/movies", newMovie)
+    axios.post("http://localhost:5000/api/movies", {
+        ...newMovie,
+        stars: newMovie.stars.split("\n"),
+    })
       .then((response) => {
           setMovieList(response.data)
         history.push("/");
       })
       .catch((error) => {
-        alert("Could not add a new friend at this time.");
+        alert("Could not add a new movie at this time.");
       });
   };
 
@@ -107,12 +109,13 @@ const AddMovie = ({setMovieList}) => {
           />
         </StyledLabel>
         <StyledLabel>
-          Actors:
+          Stars:
           <StyledTextArea
-            name="actors"
-            id="actors"
+            name="stars"
+            id="stars"
             rows="3"
             cols="1"
+            onChange={handleChanges}
           ></StyledTextArea>
         </StyledLabel>
         <StyledButton>Submit</StyledButton>

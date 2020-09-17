@@ -48,7 +48,7 @@ const initialMovie = {
   title: "",
   director: "",
   metascore: 0,
-  actors: "",
+  stars: "",
 };
 
 const MovieEditForm = (props) => {
@@ -64,7 +64,7 @@ const MovieEditForm = (props) => {
           title: response.data.title,
           director: response.data.director,
           metascore: parseInt(response.data.metascore),
-          actors: response.data.actors.join("\n"),
+          stars: response.data.stars.join("\n"),
         });
       })
       .catch((error) => {
@@ -86,13 +86,13 @@ const MovieEditForm = (props) => {
 
     const updatedMovie = {
       ...movie,
-      actors: movie.actors.split("\n"),
+      stars: movie.stars.split("\n"),
     };
 
     axios
       .put(`http://localhost:5000/api/movies/${params.id}`, updatedMovie)
       .then((response) => {
-        console.log(response);
+        console.log("handlesubmit response", response);
         props.setMovieList(
           props.movieList.map((film) => {
             if (film.id === params.id) {
@@ -112,7 +112,7 @@ const MovieEditForm = (props) => {
   return (
     <div>
       <StyledHeader>Edit Movie</StyledHeader>
-      <StyledForm onClick={handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         <StyledLabel>
           Title:
           <StyledInput
@@ -141,12 +141,14 @@ const MovieEditForm = (props) => {
           />
         </StyledLabel>
         <StyledLabel>
-          Actors:
+          Stars:
           <StyledTextArea
-            name="actors"
-            id="actors"
+            name="stars"
+            id="stars"
             rows="3"
             cols="1"
+            value={movie.stars}
+            onChange={changeHandler}
           ></StyledTextArea>
         </StyledLabel>
         <StyledButton>Submit</StyledButton>
