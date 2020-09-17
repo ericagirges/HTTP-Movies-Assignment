@@ -1,5 +1,12 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
+// import AddMovie from "./AddMovie";
+import styled from "styled-components";
+
+const StyledNav = styled.div `
+  display: flex;
+  flex-direction: column;
+`
 
 function SavedList({ list }) {
   return (
@@ -16,9 +23,14 @@ function SavedList({ list }) {
           </NavLink>
         );
       })}
+      <StyledNav>
       <div className="home-button">
         <Link to="/">Home</Link>
       </div>
+      <div className="add-button">
+        <Link to="/add-movie">Add Movie</Link>
+      </div>
+      </StyledNav>
     </div>
   );
 }

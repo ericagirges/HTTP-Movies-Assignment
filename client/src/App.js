@@ -4,6 +4,7 @@ import SavedList from "./Movies/SavedList";
 import MovieList from "./Movies/MovieList";
 import Movie from "./Movies/Movie";
 import MovieEditForm from "./Movies/MovieEditForm";
+import AddMovie from "./Movies/AddMovie";
 import axios from 'axios';
 
 const App = () => {
@@ -34,11 +35,15 @@ const App = () => {
       </Route>
 
       <Route path="/movies/:id">
-        <Movie addToSavedList={addToSavedList} />
+        <Movie addToSavedList={addToSavedList} setMovieList={setMovieList} movieList={movieList}/>
       </Route>
 
       <Route path="/update-movie/:id">
         <MovieEditForm movieList={movieList} setMovieList={setMovieList}/>
+      </Route>
+
+      <Route path="/add-movie">
+        <AddMovie setMovieList={setMovieList}/>
       </Route>
     </>
   );

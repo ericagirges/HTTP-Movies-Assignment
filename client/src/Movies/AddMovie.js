@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -44,82 +44,48 @@ const StyledTextArea = styled.textarea`
   margin-left: 30px;
 `;
 
-const initialMovie = {
+const intialFormValues = {
   title: "",
   director: "",
-  metascore: 0,
+  metascore: "",
   actors: "",
 };
 
-const MovieEditForm = (props) => {
-  const [movie, setMovie] = useState(initialMovie);
+const AddMovie = ({setMovieList}) => {
+  const [newMovie, setNewMovie] = useState(intialFormValues);
   const history = useHistory();
-  const params = useParams();
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/movies/${params.id}`)
-      .then((response) => {
-        setMovie({
-          title: response.data.title,
-          director: response.data.director,
-          metascore: parseInt(response.data.metascore),
-          actors: response.data.actors.join("\n"),
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [params.id]);
-
-  const changeHandler = (event) => {
-    event.persist();
-    let value = event.target.value;
-    setMovie({
-      ...movie,
-      [event.target.name]: value,
+  const handleChanges = (event) => {
+    setNewMovie({
+      ...newMovie,
+      [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const updatedMovie = {
-      ...movie,
-      actors: movie.actors.split("\n"),
-    };
-
     axios
-      .put(`http://localhost:5000/api/movies/${params.id}`, updatedMovie)
+      .post("/api/movies", newMovie)
       .then((response) => {
-        console.log(response);
-        props.setMovieList(
-          props.movieList.map((film) => {
-            if (film.id === params.id) {
-              return updatedMovie;
-            } else {
-              return film;
-            }
-          })
-        );
+          setMovieList(response.data)
         history.push("/");
       })
       .catch((error) => {
-        console.log(error);
+        alert("Could not add a new friend at this time.");
       });
   };
 
   return (
     <div>
-      <StyledHeader>Edit Movie</StyledHeader>
-      <StyledForm onClick={handleSubmit}>
+      <StyledHeader>Add a Movie</StyledHeader>
+      <StyledForm onSubmit={handleSubmit}>
         <StyledLabel>
           Title:
           <StyledInput
             type="text"
             name="title"
-            onChange={changeHandler}
-            value={movie.title}
+            value={newMovie.title}
+            onChange={handleChanges}
           />
         </StyledLabel>
         <StyledLabel>
@@ -127,8 +93,8 @@ const MovieEditForm = (props) => {
           <StyledInput
             type="text"
             name="director"
-            onChange={changeHandler}
-            value={movie.director}
+            value={newMovie.director}
+            onChange={handleChanges}
           />
         </StyledLabel>
         <StyledLabel>
@@ -136,8 +102,8 @@ const MovieEditForm = (props) => {
           <StyledInput
             type="text"
             name="metascore"
-            onChange={changeHandler}
-            value={movie.metascore}
+            value={newMovie.metascore}
+            onChange={handleChanges}
           />
         </StyledLabel>
         <StyledLabel>
@@ -155,4 +121,4 @@ const MovieEditForm = (props) => {
   );
 };
 
-export default MovieEditForm;
+export default AddMovie;
